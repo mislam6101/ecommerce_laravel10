@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StaffController;
@@ -68,6 +69,14 @@ Route::middleware(['auth', 'role:staff'])->group(function () {
 Route::middleware(['auth','role:customer'])->group(function(){
 
     Route::get('/customer/dashboard',[CustomerController::class,'index']);
+
+});
+
+Route::middleware(['auth','role:admin|staff'])->group(function(){
+
+Route::resource('categories',CategoryController::class);
+
+// Route::resource('products',ProductController::class);
 
 });
 require __DIR__ . '/auth.php';

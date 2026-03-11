@@ -12,7 +12,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $data = Category::all();
+        return view('backend.category.index', compact('data'));
     }
 
     /**
@@ -20,7 +21,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        return view('backend.category.create');
     }
 
     /**
@@ -28,7 +29,24 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate(
+            [
+                'name' => 'required|regex:/^[A-Za-z\s]+$/|max:50|min:3|unique:categories,name',
+            ],
+            [
+                'name.required' => 'Category name is required.',
+                'name.regex' => 'Category name must be a letter.',
+                'name.max' => 'Category name cannot be more than 50 characters.',
+                'name.min' => 'Category name cannot be less than 3 characters.',
+                'name.unique' => 'This category already exists.',
+            ]
+        );
+
+        Category::create([
+            'name' => $request->name,
+        ]);
+
+        return redirect()->route('categories.index')->with('success', 'Category Added Successfully');
     }
 
     /**
@@ -58,8 +76,11 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
+    public function destroy($id)
     {
-        //
+        $data = Category::findOrFail($id);
+        $data->delete();
+
+        return redirect()->back()->with('success', 'Category Deleted Successfully');
     }
 }
