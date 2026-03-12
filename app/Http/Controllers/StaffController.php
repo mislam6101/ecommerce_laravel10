@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class StaffController extends Controller
@@ -19,7 +20,14 @@ class StaffController extends Controller
      */
     public function create()
     {
-        //
+        return view('backend.staff.create');
+    }
+
+    public function a_index()
+    {
+        $staffs = User::role('staff')->get();
+
+        return view('backend.staff.index', compact('staffs'));
     }
 
     /**
@@ -27,7 +35,25 @@ class StaffController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:8',
+        ], [
+            'name.required' => 'Name field must be filled',
+            'email.unique' => 'Email already taken',
+            'password.min' => 'Password must be 8 characters',
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+        ]);
+
+        $user->assignRole('staff');
+
+        return redirect()->route('admin.staff.a_index')->with('success', 'Staff created successfully');
     }
 
     /**
@@ -60,5 +86,15 @@ class StaffController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function changeStatus(Request $request)
+    {
+        $user = User::find($request->id);
+
+        $user->status = $request->status;
+        $user->save();
+
+        return response()->json(['success' => true]);
     }
 }

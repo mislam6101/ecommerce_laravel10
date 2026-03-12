@@ -62,22 +62,50 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <h5>Form controls</h5>
+                            <h5>Staffs</h5>
                         </div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <form action="{{ route('categories.store') }}" method="post">
+                                    <form action="{{ route('admin.staff.store') }}" method="post">
 
                                         @csrf
                                         <div class="mb-3">
-                                            <label class="form-label">Category Name</label>
+                                            <label class="form-label">Staff Name</label>
                                             <input type="text" name="name"
                                                 class="form-control @error('name') is-invalid @enderror"
                                                 id="exampleInputEmail1" aria-describedby="emailHelp"
-                                                placeholder="Enter Category Name" value="{{ old('name') }}" />
+                                                placeholder="Enter Staff's Name" />
 
                                             @error('name')
+                                                <div class="invalid-feedback">
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Staff Email</label>
+                                            <input type="email" name="email"
+                                                class="form-control @error('email') is-invalid @enderror"
+                                                id="exampleInputEmail1" aria-describedby="emailHelp"
+                                                placeholder="Enter Staff's Email" value="{{ old('email') }}" />
+
+                                            @error('email')
+                                                <div class="invalid-feedback">
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Password</label>
+                                            <input type="password" name="password"
+                                                class="form-control @error('password') is-invalid @enderror"
+                                                id="exampleInputEmail1" aria-describedby="emailHelp"
+                                                placeholder="Create Password" />
+
+                                            @error('password')
                                                 <div class="invalid-feedback">
                                                     {{ $message }}
                                                 </div>

@@ -59,24 +59,27 @@ Route::middleware('auth')->get('/redirect-dashboard', function () {
 Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::get('/admin/dashboard', [AdminController::class, 'index']);
+    Route::get('/admin/staffs', [StaffController::class, 'a_index'])->name('admin.staff.a_index');
+    Route::get('/admin/staff/create', [StaffController::class, 'create'])->name('admin.staff.create');
+    Route::post('/admin/staff/store', [StaffController::class, 'store'])->name('admin.staff.store');
+    Route::post('/admin/staff/status', [StaffController::class, 'changeStatus'])->name('admin.staff.status');
 });
 
-Route::middleware(['auth', 'role:staff'])->group(function () {
+Route::middleware(['auth','check.status', 'role:staff'])->group(function () {
 
     Route::get('/staff/dashboard', [StaffController::class, 'index']);
 });
 
-Route::middleware(['auth','role:customer'])->group(function(){
+Route::middleware(['auth', 'role:customer'])->group(function () {
 
-    Route::get('/customer/dashboard',[CustomerController::class,'index']);
-
+    Route::get('/customer/dashboard', [CustomerController::class, 'index']);
 });
 
-Route::middleware(['auth','role:admin|staff'])->group(function(){
+Route::middleware(['auth', 'role:admin|staff'])->group(function () {
 
-Route::resource('categories',CategoryController::class);
+    Route::resource('categories', CategoryController::class);
 
-// Route::resource('products',ProductController::class);
+    // Route::resource('products',ProductController::class);
 
 });
 require __DIR__ . '/auth.php';
