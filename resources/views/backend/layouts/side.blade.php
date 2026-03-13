@@ -69,8 +69,8 @@
                         <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                     </a>
                     <ul class="pc-submenu">
-                        <li class="pc-item"><a class="pc-link" href="{{url('')}}/admins/membership-dashboard.html">Add Product</a></li>
-                        <li class="pc-item"><a class="pc-link" href="{{url('')}}/admins/membership-list.html">Product List</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ route('products.create') }}">Add Product</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ route('products.index') }}">Product List</a></li>
                         <li class="pc-item"><a class="pc-link" href="{{url('')}}/admins/membership-pricing.html">Pricing</a></li>
                         <li class="pc-item"><a class="pc-link" href="{{url('')}}/admins/membership-setting.html">Setting</a></li>
                     </ul>

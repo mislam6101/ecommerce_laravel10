@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StaffController;
 use Illuminate\Support\Facades\Route;
@@ -65,7 +66,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/staff/status', [StaffController::class, 'changeStatus'])->name('admin.staff.status');
 });
 
-Route::middleware(['auth','check.status', 'role:staff'])->group(function () {
+Route::middleware(['auth', 'check.status', 'role:staff'])->group(function () {
 
     Route::get('/staff/dashboard', [StaffController::class, 'index']);
 });
@@ -79,7 +80,8 @@ Route::middleware(['auth', 'role:admin|staff'])->group(function () {
 
     Route::resource('categories', CategoryController::class);
 
-    // Route::resource('products',ProductController::class);
+    Route::resource('products', ProductController::class);
 
+    Route::post('/product-status', [ProductController::class, 'statusUpdate']);
 });
 require __DIR__ . '/auth.php';
