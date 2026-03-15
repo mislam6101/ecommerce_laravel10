@@ -1,10 +1,13 @@
 <?php
 
+use App\Http\Controllers\AboutController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ShopController;
 use App\Http\Controllers\StaffController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -20,9 +23,17 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+Route::get('/', [HomeController::class, 'index']);
+Route::resource('home', HomeController::class);
+
+Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
+
+Route::resource('about', AboutController::class);
+
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard');

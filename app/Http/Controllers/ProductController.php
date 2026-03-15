@@ -46,7 +46,7 @@ class ProductController extends Controller
             'price' => 'required|numeric',
             'discount_price' => 'nullable|numeric',
             'stock' => 'required|integer',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048'
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:3048'
         ]);
 
 
