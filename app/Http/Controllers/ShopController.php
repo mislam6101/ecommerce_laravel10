@@ -15,9 +15,15 @@ class ShopController extends Controller
     {
         $products = Product::orderBy('id', 'desc')->take(10)->get();
         $allProducts = Product::orderBy('id', 'desc')->skip(10)->take(1000)->get();
-        return view('frontend.shop', compact('products','allProducts'));
+        return view('frontend.shop', compact('products', 'allProducts'));
     }
 
+    public function productDetails($id)
+    {
+        $product = Product::findOrFail($id);
+
+        return view('frontend.product_details', compact('product'));
+    }
     /**
      * Show the form for creating a new resource.
      */

@@ -26,15 +26,6 @@ use Illuminate\Support\Facades\Auth;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
-
-Route::get('/', [HomeController::class, 'index']);
-Route::resource('home', HomeController::class);
-
-Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
-
-Route::resource('about', AboutController::class);
-
-
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
@@ -46,9 +37,17 @@ Route::resource('about', AboutController::class);
 // });
 
 
+
+
+Route::get('/', [HomeController::class, 'index']);
+Route::resource('home', HomeController::class);
+
+Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
+Route::get('/product/{id}', [ShopController::class, 'productDetails'])->name('product.details');
+
+Route::resource('about', AboutController::class);
+
 //THis is mine:
-
-
 
 Route::middleware('auth')->get('/redirect-dashboard', function () {
 

@@ -36,9 +36,9 @@
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>
-                                                <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-                                                <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-                                            <![endif]-->
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
         <style>
             .thumb {
                 position: relative;
@@ -126,8 +126,8 @@
                                         <img class="img-2" src="{{ asset('storage/' . $p->image) }}" alt="">
                                         <!-- Overlay  -->
                                         <div class="overlay">
-                                            <div class="position-center-center"> <a class="popup-with-move-anim"
-                                                    href="#qck-view-shop"><i class="icon-eye"></i></a> </div>
+                                            <div class="position-center-center"> <a
+                                                    href="{{ route('product.details', $p->id) }}"><i class="icon-eye"></i></a> </div>
                                             <div class="add-crt"><a href="#."><i
                                                         class="icon-basket margin-right-10"></i>
                                                     Add To Cart</a></div>
@@ -135,16 +135,16 @@
                                     </div>
 
                                     <!-- Item Name -->
-                                    <div class="item-name fr-grd"> <a href="#."
+                                    <div class="item-name fr-grd"> <a href="{{ route('product.details', $p->id) }}"
                                             class="i-tittle">{{ $p->name }}</a>
                                         <span class="price">
                                             @if ($p->discount_price > 0)
                                                 <small>$</small><span class="line-through">{{ $p->price }}</span>
                                                 <small>$</small>{{ $dis }}
-                                        </span> <a class="deta animated fadeInRight" href="#.">View Detail</a>
+                                        </span> <a class="deta animated fadeInRight" href="{{ route('product.details', $p->id) }}">View Detail</a>
                                     @else
                                         <small>$</small>{{ $p->price }}</span> <a class="deta animated fadeInRight"
-                                            href="#.">View Detail</a>
+                                            href="{{ route('product.details', $p->id) }}">View Detail</a>
                         @endif
 
                     </div>
