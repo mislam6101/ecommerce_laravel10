@@ -6,7 +6,7 @@
       <!-- Login Info -->
       <div class="login-info">
         <ul>
-          <li><a href="login.html">LOGIN</a></li>
+          <li><a href="{{ route('login') }}">LOGIN</a></li>
           <li><a href="#."> MY ACCOUNT </a></li>
           <li><a href="shopping-cart.html">MY CART</a></li>
           
