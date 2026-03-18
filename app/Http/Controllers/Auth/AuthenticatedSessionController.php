@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Cart;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -54,5 +55,34 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+
+    //Cart Marge after login:
+    protected function authenticated(Request $request, $user)
+    {
+        $sessionCart = session()->get('cart', []);
+
+        if (!empty($sessionCart)) {
+            foreach ($sessionCart as $productId => $item) {
+
+                $cart = Cart::where('user_id', $user->id)
+                    ->where('product_id', $productId)
+                    ->first();
+
+                if ($cart) {
+                    $cart->quantity += $item['quantity'];
+                    $cart->save();
+                } else {
+                    Cart::create([
+                        'user_id' => $user->id,
+                        'product_id' => $productId,
+                        'quantity' => $item['quantity']
+                    ]);
+                }
+            }
+
+            session()->forget('cart');
+        }
     }
 }

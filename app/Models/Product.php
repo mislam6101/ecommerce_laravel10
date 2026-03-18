@@ -23,9 +23,14 @@ class Product extends Model
         'status',
 
     ];
-
+    //Relation with Category:
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
+    //Relation with Cart
+    public function carts()
+{
+    return $this->hasMany(Cart::class);
+}
 }

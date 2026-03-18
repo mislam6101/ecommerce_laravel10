@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HomeController;
@@ -44,6 +45,10 @@ Route::resource('home', HomeController::class);
 
 Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
 Route::get('/product/{id}', [ShopController::class, 'productDetails'])->name('product.details');
+
+Route::get('/add-to-cart/{id}', [CartController::class, 'addToCart'])->name('cart.add');
+Route::get('/cart', [CartController::class, 'cartList'])->name('cart.list');
+Route::post('/cart/update', [CartController::class, 'updateCart']);
 
 Route::resource('about', AboutController::class);
 

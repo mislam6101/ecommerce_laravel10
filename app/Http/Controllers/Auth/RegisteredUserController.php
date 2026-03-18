@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cart;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
@@ -44,10 +45,39 @@ class RegisteredUserController extends Controller
 
         $user->assignRole('customer');
 
+        $this->mergeCart($user);
+
         event(new Registered($user));
 
         Auth::login($user);
 
         return redirect(RouteServiceProvider::HOME);
+    }
+
+    private function mergeCart($user)
+    {
+        $sessionCart = session()->get('cart', []);
+
+        if (!empty($sessionCart)) {
+            foreach ($sessionCart as $productId => $item) {
+
+                $cart = Cart::where('user_id', $user->id)
+                    ->where('product_id', $productId)
+                    ->first();
+
+                if ($cart) {
+                    $cart->quantity += $item['quantity'];
+                    $cart->save();
+                } else {
+                    Cart::create([
+                        'user_id' => $user->id,
+                        'product_id' => $productId,
+                        'quantity' => $item['quantity']
+                    ]);
+                }
+            }
+
+            session()->forget('cart');
+        }
     }
 }

@@ -128,7 +128,7 @@
                                         <div class="overlay">
                                             <div class="position-center-center"> <a
                                                     href="{{ route('product.details', $p->id) }}"><i class="icon-eye"></i></a> </div>
-                                            <div class="add-crt"><a href="#."><i
+                                            <div class="add-crt"><a href="{{ route('cart.add', $p->id) }}"><i
                                                         class="icon-basket margin-right-10"></i>
                                                     Add To Cart</a></div>
                                         </div>
@@ -210,7 +210,7 @@
                                         </div>
 
                                         <div class="add-crt">
-                                            <a href="#.">
+                                            <a href="{{ route('cart.add'), $p->id }}">
                                                 <i class="icon-basket margin-right-10"></i>
                                                 Add To Cart
                                             </a>
@@ -289,7 +289,7 @@
                             <input type="number" min="1" max="100" step="1" value="1"
                                 class="form-control qty">
                         </div>
-                        <a href="#." class="btn btn-inverse"><i class="icon-heart"></i></a> <a href="#."
+                        <a href="" class="btn btn-inverse"><i class="icon-heart"></i></a> <a href="#."
                             class="btn">ADD TO CART </a>
                     </div>
                 </div>

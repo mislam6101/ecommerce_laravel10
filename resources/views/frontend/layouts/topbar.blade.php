@@ -8,7 +8,7 @@
         <ul>
           <li><a href="{{ route('login') }}">LOGIN</a></li>
           <li><a href="#."> MY ACCOUNT </a></li>
-          <li><a href="shopping-cart.html">MY CART</a></li>
+          <li><a href="{{ route('cart.list') }}">MY CART</a></li>
           
           <!-- USER BASKET -->
           <li class="dropdown user-basket"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true"> (2) Items <i class="icon-basket-loaded"></i> </a>
