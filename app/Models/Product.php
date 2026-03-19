@@ -30,7 +30,7 @@ class Product extends Model
     }
     //Relation with Cart
     public function carts()
-{
-    return $this->hasMany(Cart::class);
-}
+    {
+        return $this->hasMany(Cart::class);
+    }
 }

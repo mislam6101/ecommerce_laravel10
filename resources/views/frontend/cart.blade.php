@@ -35,9 +35,9 @@
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>
-                                                                                            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-                                                                                            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-                                                                                        <![endif]-->
+                                                                                                    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+                                                                                                    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+                                                                                                <![endif]-->
 
     </head>
 @endsection
@@ -66,6 +66,15 @@
                 <div class="shopping-cart text-center">
                     @if (auth()->check())
                         @foreach ($carts as $cart)
+                            @if ($cart->product->discount_price > 0)
+                                @php
+                                    $dis = $cart->product->price - $cart->product->discount_price;
+                                @endphp
+                            @else
+                                @php
+                                    $dis = $cart->product->price;
+                                @endphp
+                            @endif
                             <table class="table">
                                 <thead class="thead-dark">
                                     <tr>
@@ -87,7 +96,7 @@
                                                 <span>{{ $cart->product->name }}</span>
                                             </div>
                                         </th>
-                                        <td><span class="price"><small>$</small>{{ $cart->product->price }}</span></td>
+                                        <td><span class="price"><small>$</small>{{ $dis }}</span></td>
                                         <td>
 
                                             <div class="qty-box">
@@ -107,7 +116,7 @@
                                             </div> --}}
                                         </td>
                                         <td><span class="price"
-                                                id="total-{{ $cart->id }}"><small>$</small>{{ $cart->product->price * $cart->quantity }}</span>
+                                                id="total-{{ $cart->id }}"><small>$</small>{{ $dis * $cart->quantity }}</span>
                                         </td>
                                         <td><a href="#."><i class="icon-close"></i></a></td>
                                     </tr>
@@ -118,6 +127,15 @@
                     @else
                         {{-- for guest cart --}}
                         @foreach ($carts as $id => $item)
+                            @if ($item['discount'])
+                                @php
+                                    $disg = $item['price'] - $item['discount'];
+                                @endphp
+                            @else
+                                @php
+                                    $disg = $item['price'];
+                                @endphp
+                            @endif
                             <table class="table">
                                 <thead class="thead-dark">
                                     <tr>
@@ -139,7 +157,7 @@
                                                 <span>{{ $item['name'] }}</span>
                                             </div>
                                         </th>
-                                        <td><span class="price"><small>$</small>{{ $item['price'] }}</span></td>
+                                        <td><span class="price"><small>$</small>{{ $disg }}</span></td>
                                         <td>
 
                                             <div class="qty-box">
@@ -159,7 +177,7 @@
                                             </div> --}}
                                         </td>
                                         <td><span id="total-{{ $id }}"
-                                                class="price"><small>$</small>{{ $item['price'] * $item['quantity'] }}</span>
+                                                class="price"><small>$</small>{{ $disg * $item['quantity'] }}</span>
                                         </td>
                                         <td><a href="#."><i class="icon-close"></i></a></td>
                                     </tr>
