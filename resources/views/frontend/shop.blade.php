@@ -122,8 +122,8 @@
                                             <div class="out-text">Out Of Stock</div>
                                         @endif
 
-                                        <img class="img-1" src="{{ asset('storage/' . $p->image) }}" alt="">
-                                        <img class="img-2" src="{{ asset('storage/' . $p->image) }}" alt="">
+                                        <img style="height: 300px" class="img-1" src="{{ asset('storage/' . $p->image) }}" alt="">
+                                        <img style="height: 300px" class="img-2" src="{{ asset('storage/' . $p->image) }}" alt="">
                                         <!-- Overlay  -->
                                         <div class="overlay">
                                             <div class="position-center-center"> <a

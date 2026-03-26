@@ -50,21 +50,41 @@ class CartController extends Controller
             session()->put('cart', $cart); // ⚠️ এটা miss করলে save হবে না
         }
 
-        return back()->with('success', 'Added to cart');
+        return redirect()->route('cart.list')->with('success', 'Added to cart');
     }
 
     //Cart List:
     public function cartList()
     {
+        $total = 0;
+
         if (auth()->check()) {
+
             $carts = Cart::with('product')
                 ->where('user_id', auth()->id())
                 ->get();
+
+            foreach ($carts as $cart) {
+                $price = $cart->product->discount_price > 0
+                    ? $cart->product->price - $cart->product->discount_price
+                    : $cart->product->price;
+
+                $total += $price * $cart->quantity;
+            }
         } else {
+
             $carts = session()->get('cart', []);
+
+            foreach ($carts as $item) {
+                $price = $item['discount'] > 0
+                    ? $item['price'] - $item['discount']
+                    : $item['price'];
+
+                $total += $price * $item['quantity'];
+            }
         }
 
-        return view('frontend.cart', compact('carts'));
+        return view('frontend.cart', compact('carts', 'total'));
     }
     //Cart update using ajax:
     public function updateCart(Request $request)
@@ -84,16 +104,30 @@ class CartController extends Controller
 
             $cart->save();
 
-            if($cart->product->discount_price > 0){
+            if ($cart->product->discount_price > 0) {
                 $dis = $cart->product->price - $cart->product->discount_price;
-            }
-            else{
+            } else {
                 $dis = $cart->product->price;
+            }
+
+            $grandTotal = 0;
+
+            $carts = Cart::with('product')
+                ->where('user_id', auth()->id())
+                ->get();
+
+            foreach ($carts as $item) {
+                $price = $item->product->discount_price > 0
+                    ? $item->product->price - $item->product->discount_price
+                    : $item->product->price;
+
+                $grandTotal += $price * $item->quantity;
             }
 
             return response()->json([
                 'quantity' => $cart->quantity,
-                'total' => $cart->quantity * $dis
+                'total' => $cart->quantity * $dis,
+                'grand_total' => $grandTotal // 🔥 add this
             ]);
         }
 
@@ -113,16 +147,26 @@ class CartController extends Controller
 
             session()->put('cart', $cart);
 
-            if($cart[$id]['discount'] > 0){
+            if ($cart[$id]['discount'] > 0) {
                 $disg = $cart[$id]['price'] - $cart[$id]['discount'];
-            }
-            else{
+            } else {
                 $disg = $cart[$id]['price'];
+            }
+
+            $grandTotal = 0;
+
+            foreach ($cart as $item) {
+                $price = $item['discount'] > 0
+                    ? $item['price'] - $item['discount']
+                    : $item['price'];
+
+                $grandTotal += $price * $item['quantity'];
             }
 
             return response()->json([
                 'quantity' => $cart[$id]['quantity'],
-                'total' => $cart[$id]['quantity'] * $disg
+                'total' => $cart[$id]['quantity'] * $disg,
+                'grand_total' => $grandTotal // 🔥 add this
             ]);
         }
 
@@ -130,6 +174,61 @@ class CartController extends Controller
             'error' => 'Item not found'
         ]);
     }
+    public function removeCart(Request $request)
+    {
+        // 🔐 Logged user
+        if (auth()->check()) {
 
-    
+            $cart = Cart::findOrFail($request->id);
+            $cart->delete();
+
+            // 🔥 Grand total calculate
+            $grandTotal = 0;
+
+            $carts = Cart::with('product')
+                ->where('user_id', auth()->id())
+                ->get();
+
+            foreach ($carts as $item) {
+                $price = $item->product->discount_price > 0
+                    ? $item->product->price - $item->product->discount_price
+                    : $item->product->price;
+
+                $grandTotal += $price * $item->quantity;
+            }
+
+            return response()->json([
+                'success' => true,
+                'id' => $request->id,
+                'grand_total' => $grandTotal
+            ]);
+        }
+
+        // 👤 Guest user
+        $cart = session()->get('cart', []);
+
+        if (isset($cart[$request->id])) {
+            unset($cart[$request->id]);
+            session()->put('cart', $cart);
+
+            // 🔥 Grand total calculate
+            $grandTotal = 0;
+
+            foreach ($cart as $item) {
+                $price = $item['discount'] > 0
+                    ? $item['price'] - $item['discount']
+                    : $item['price'];
+
+                $grandTotal += $price * $item['quantity'];
+            }
+
+            return response()->json([
+                'success' => true,
+                'id' => $request->id,
+                'grand_total' => $grandTotal
+            ]);
+        }
+
+        return response()->json(['error' => 'Item not found']);
+    }
 }

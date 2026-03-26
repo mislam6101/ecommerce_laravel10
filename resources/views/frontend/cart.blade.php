@@ -32,12 +32,6 @@
             href="https://fonts.googleapis.com/css?family=Merriweather:300,400,700,900|Poppins:300,400,500,600,700|Montserrat:300,400,500,600,700,800"
             rel="stylesheet">
 
-        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-        <!--[if lt IE 9]>
-                                                                                                    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-                                                                                                    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-                                                                                                <![endif]-->
 
     </head>
 @endsection
@@ -64,31 +58,37 @@
 
                 <!-- Payments Steps -->
                 <div class="shopping-cart text-center">
+                    @if (session('success'))
+                        <div id="success-message" class="alert alert-success">{{ session('success') }}</div>
+                    @endif
+                    <div id="cart-message"></div>
                     @if (auth()->check())
-                        @foreach ($carts as $cart)
-                            @if ($cart->product->discount_price > 0)
-                                @php
-                                    $dis = $cart->product->price - $cart->product->discount_price;
-                                @endphp
-                            @else
-                                @php
-                                    $dis = $cart->product->price;
-                                @endphp
-                            @endif
-                            <table class="table">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th scope="col" class="text-left">Items</th>
-                                        <th scope="col">Price</th>
-                                        <th scope="col">Qty</th>
-                                        <th scope="col">Total</th>
-                                        <th scope="col">&nbsp;</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
+                        <table class="table">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col" class="text-left">Items</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Qty</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col">&nbsp;</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach ($carts as $cart)
+                                    @if ($cart->product->discount_price > 0)
+                                        @php
+                                            $dis = $cart->product->price - $cart->product->discount_price;
+                                        @endphp
+                                    @else
+                                        @php
+                                            $dis = $cart->product->price;
+                                        @endphp
+                                    @endif
+                                    <tr id="cart-row-{{ $cart->id }}">
                                         <th class="text-left"> <!-- Media Image -->
-                                            <a href="#." class="item-img"> <img class="media-object"
+                                            <a href="#." class="item-img"> <img style="height: 120px"
+                                                    class="media-object"
                                                     src="{{ asset('storage/' . $cart->product->image) }}" alt="">
                                             </a>
                                             <!-- Item Name -->
@@ -116,41 +116,46 @@
                                             </div> --}}
                                         </td>
                                         <td><span class="price"
-                                                id="total-{{ $cart->id }}"><small>$</small>{{ $dis * $cart->quantity }}</span>
+                                                id="row-total-{{ $cart->id }}"><small>$</small>{{ $dis * $cart->quantity }}</span>
                                         </td>
-                                        <td><a href="#."><i class="icon-close"></i></a></td>
+                                        <td><a href="javascript:void(0)" class="remove-item" data-id="{{ $cart->id }}">
+                                                <i class="icon-close"></i>
+                                            </a></td>
                                     </tr>
+                                @endforeach
+                            </tbody>
 
-                                </tbody>
-                            </table>
-                        @endforeach
+                        </table>
                     @else
                         {{-- for guest cart --}}
-                        @foreach ($carts as $id => $item)
-                            @if ($item['discount'])
-                                @php
-                                    $disg = $item['price'] - $item['discount'];
-                                @endphp
-                            @else
-                                @php
-                                    $disg = $item['price'];
-                                @endphp
-                            @endif
-                            <table class="table">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th scope="col" class="text-left">Items</th>
-                                        <th scope="col">Price</th>
-                                        <th scope="col">Qty</th>
-                                        <th scope="col">Total</th>
-                                        <th scope="col">&nbsp;</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
+
+                        <table class="table">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col" class="text-left">Items</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Qty</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col">&nbsp;</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach ($carts as $id => $item)
+                                    @if ($item['discount'])
+                                        @php
+                                            $disg = $item['price'] - $item['discount'];
+                                        @endphp
+                                    @else
+                                        @php
+                                            $disg = $item['price'];
+                                        @endphp
+                                    @endif
+                                    <tr id="cart-row-{{ $id }}">
                                         <th class="text-left"> <!-- Media Image -->
-                                            <a href="#." class="item-img"> <img class="media-object"
-                                                    src="{{ asset('storage/' . $item['image']) }}" alt="">
+                                            <a href="#." class="item-img"> <img style="height: 120px"
+                                                    class="media-object" src="{{ asset('storage/' . $item['image']) }}"
+                                                    alt="">
                                             </a>
                                             <!-- Item Name -->
                                             <div class="media-body">
@@ -176,15 +181,18 @@
                                                     value="1" class="form-control qty">
                                             </div> --}}
                                         </td>
-                                        <td><span id="total-{{ $id }}"
+                                        <td><span id="row-total-{{ $id }}"
                                                 class="price"><small>$</small>{{ $disg * $item['quantity'] }}</span>
                                         </td>
-                                        <td><a href="#."><i class="icon-close"></i></a></td>
+                                        <td><a href="javascript:void(0)" class="remove-item"
+                                                data-id="{{ $id }}">
+                                                <i class="icon-close"></i>
+                                            </a></td>
                                     </tr>
+                                @endforeach
+                            </tbody>
 
-                                </tbody>
-                            </table>
-                        @endforeach
+                        </table>
                     @endif
                 </div>
             </div>
@@ -214,12 +222,41 @@
                             <h6>Grand Total</h6>
                             <div class="grand-total">
                                 <div class="order-detail">
-                                    <p>Skinny Jeans <span>$598 </span></p>
-                                    <p>Shirts Skinny <span>$199 </span></p>
-                                    <p>Shoes White Pair <span> $139</span></p>
-
+                                    @if (auth()->check())
+                                        @foreach ($carts as $cart)
+                                            @if ($cart->product->discount_price > 0)
+                                                @php
+                                                    $dis = $cart->product->price - $cart->product->discount_price;
+                                                @endphp
+                                            @else
+                                                @php
+                                                    $dis = $cart->product->price;
+                                                @endphp
+                                            @endif
+                                            <p>{{ $cart->product->name }} <span
+                                                    id="summary-total-{{ $cart->id }}">${{ $dis * $cart->quantity }}
+                                                </span>
+                                            </p>
+                                        @endforeach
+                                    @else
+                                        {{-- for guest cart --}}
+                                        @foreach ($carts as $id => $item)
+                                            @if ($item['discount'])
+                                                @php
+                                                    $disg = $item['price'] - $item['discount'];
+                                                @endphp
+                                            @else
+                                                @php
+                                                    $disg = $item['price'];
+                                                @endphp
+                                            @endif
+                                            <p>{{ $item['name'] }} <span id="summary-total-{{ $id }}"
+                                                    class="price">${{ $disg * $item['quantity'] }} </span></p>
+                                        @endforeach
+                                    @endif
                                     <!-- SUB TOTAL -->
-                                    <p class="all-total">TOTAL COST <span> $998</span></p>
+                                    <p class="all-total">TOTAL COST <span id="grand-total"> {{ $total }}</span>
+                                    </p>
                                 </div>
                                 <a href="#." class="btn margin-top-20">Proceed to checkout</a>
                             </div>
@@ -339,10 +376,89 @@
                     }
 
                     input.value = data.quantity;
-                    document.getElementById('total-' + id).innerText = data.total;
+                    document.getElementById('row-total-' + id).innerText = data.total;
+                    document.getElementById('summary-total-' + id).innerText = data.total;
+
+                    document.getElementById('grand-total').innerText = '$' + data.grand_total;
 
                 })
                 .catch(err => console.log(err));
         }
+    </script>
+    <script>
+        document.querySelectorAll('.remove-item').forEach(btn => {
+
+            btn.addEventListener('click', function() {
+
+                let id = this.dataset.id;
+
+                fetch("/cart/remove", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                        },
+                        body: JSON.stringify({
+                            id: id
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+
+                        if (data.error) {
+                            alert(data.error);
+                            return;
+                        }
+
+                        // 🔥 Row remove
+                        document.getElementById('cart-row-' + id).remove();
+
+                        // 🔥 Summary remove
+                        let summary = document.getElementById('summary-total-' + id);
+                        if (summary) {
+                            summary.parentElement.remove();
+                        }
+
+                        // 🔥 Grand total update
+                        document.getElementById('grand-total').innerText = '$' + data.grand_total;
+
+                        showMessage('Item removed from cart!', 'success');
+
+                    })
+                    .catch(err => console.log(err));
+            });
+
+        });
+
+        function showMessage(message) {
+
+            let container = document.getElementById('cart-message');
+
+            container.innerHTML = `
+                                    <div class="alert alert-danger" id="alert-msg">
+                                        ${message}
+                                    </div>
+                                `;
+
+            setTimeout(() => {
+                let msg = document.getElementById('alert-msg');
+                if (msg) {
+                    msg.style.transition = "opacity 0.5s";
+                    msg.style.opacity = "0";
+
+                    setTimeout(() => {
+                        msg.remove();
+                    }, 200);
+                }
+            }, 2000);
+        }
+    </script>
+    <script>
+        setTimeout(function() {
+            let msg = document.getElementById('success-message');
+            if (msg) {
+                msg.style.display = 'none';
+            }
+        }, 2000);
     </script>
 @endsection

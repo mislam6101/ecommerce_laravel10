@@ -49,6 +49,7 @@ Route::get('/product/{id}', [ShopController::class, 'productDetails'])->name('pr
 Route::get('/add-to-cart/{id}', [CartController::class, 'addToCart'])->name('cart.add');
 Route::get('/cart', [CartController::class, 'cartList'])->name('cart.list');
 Route::post('/cart/update', [CartController::class, 'updateCart']);
+Route::post('/cart/remove', [CartController::class, 'removeCart'])->name('cart.remove');
 
 Route::resource('about', AboutController::class);
 

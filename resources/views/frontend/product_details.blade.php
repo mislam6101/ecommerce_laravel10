@@ -116,7 +116,7 @@
                                     </li>
 
                                     <!-- ADD TO CART -->
-                                    <li class="col-md-6"> <a href="{{ url('') }}/#." class="btn">ADD TO CART</a>
+                                    <li class="col-md-6"> <a href="{{ route('cart.add', $product->id) }}" class="btn">ADD TO CART</a>
                                     </li>
 
                                     <!-- LIKE -->
