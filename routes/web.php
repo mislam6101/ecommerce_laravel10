@@ -4,6 +4,7 @@ use App\Http\Controllers\AboutController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
@@ -50,6 +51,7 @@ Route::get('/add-to-cart/{id}', [CartController::class, 'addToCart'])->name('car
 Route::get('/cart', [CartController::class, 'cartList'])->name('cart.list');
 Route::post('/cart/update', [CartController::class, 'updateCart']);
 Route::post('/cart/remove', [CartController::class, 'removeCart'])->name('cart.remove');
+Route::post('/apply-coupon', [CartController::class, 'applyCoupon']);
 
 Route::resource('about', AboutController::class);
 
@@ -97,6 +99,7 @@ Route::middleware(['auth', 'role:admin|staff'])->group(function () {
     Route::resource('categories', CategoryController::class);
 
     Route::resource('products', ProductController::class);
+    Route::resource('coupon', CouponController::class);
 
     Route::post('/product-status', [ProductController::class, 'statusUpdate']);
 });

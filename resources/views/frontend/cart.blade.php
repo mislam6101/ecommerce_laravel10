@@ -210,11 +210,12 @@
                         <div class="col-sm-7">
                             <h6>Discound Code</h6>
                             <form>
-                                <input type="text" value="" placeholder="ENTER YOUR CODE IF YOU HAVE ONE">
-                                <button type="submit" class="btn btn-small btn-dark">APPLY CODE</button>
+                                <input type="text" value="" id="coupon-code"
+                                    placeholder="ENTER YOUR CODE IF YOU HAVE ONE">
+                                <button type="button" id="apply-coupon" class="btn btn-small btn-dark">APPLY
+                                    CODE</button>
                             </form>
-                            <div class="coupn-btn"> <a href="#." class="btn">continue shopping</a> <a
-                                    href="#." class="btn">update cart</a> </div>
+                            <div id="coupon-message" style="margin-top:10px;"></div>
                         </div>
 
                         <!-- SUB TOTAL -->
@@ -255,8 +256,18 @@
                                         @endforeach
                                     @endif
                                     <!-- SUB TOTAL -->
-                                    <p class="all-total">TOTAL COST <span id="grand-total"> {{ $total }}</span>
+                                    <p>Discount
+                                        <span id="discount-amount">
+                                            ${{ session('coupon')['discount'] ?? 0 }}
+                                        </span>
                                     </p>
+
+                                    <p class="all-total">
+                                        TOTAL COST
+                                        <span id="grand-total"> ${{ $total }}</span>
+                                    </p>
+                                    </p>
+
                                 </div>
                                 <a href="#." class="btn margin-top-20">Proceed to checkout</a>
                             </div>
@@ -341,124 +352,136 @@
     <script src="js/main.js"></script>
 
     <script>
-        document.querySelectorAll('.qty-box').forEach(box => {
+        document.addEventListener('DOMContentLoaded', function() {
 
-            let plus = box.querySelector('.plus');
-            let minus = box.querySelector('.minus');
-            let input = box.querySelector('.qty-input');
+            // 🔹 Quantity increment/decrement
+            document.querySelectorAll('.qty-box').forEach(box => {
+                let plus = box.querySelector('.plus');
+                let minus = box.querySelector('.minus');
+                let input = box.querySelector('.qty-input');
 
-            plus.addEventListener('click', () => updateQty(input, 'increment'));
-            minus.addEventListener('click', () => updateQty(input, 'decrement'));
+                plus.addEventListener('click', () => updateQty(input, 'increment'));
+                minus.addEventListener('click', () => updateQty(input, 'decrement'));
+            });
 
-        });
+            function updateQty(input, type) {
+                let id = input.dataset.id;
 
-        function updateQty(input, type) {
-
-            let id = input.dataset.id;
-
-            fetch("/cart/update", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                    },
-                    body: JSON.stringify({
-                        id: id,
-                        type: type
-                    })
-                })
-                .then(res => res.json())
-                .then(data => {
-
-                    if (data.error) {
-                        alert(data.error);
-                        return;
-                    }
-
-                    input.value = data.quantity;
-                    document.getElementById('row-total-' + id).innerText = data.total;
-                    document.getElementById('summary-total-' + id).innerText = data.total;
-
-                    document.getElementById('grand-total').innerText = '$' + data.grand_total;
-
-                })
-                .catch(err => console.log(err));
-        }
-    </script>
-    <script>
-        document.querySelectorAll('.remove-item').forEach(btn => {
-
-            btn.addEventListener('click', function() {
-
-                let id = this.dataset.id;
-
-                fetch("/cart/remove", {
+                fetch("/cart/update", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
                             "X-CSRF-TOKEN": "{{ csrf_token() }}"
                         },
                         body: JSON.stringify({
-                            id: id
+                            id: id,
+                            type: type
                         })
                     })
                     .then(res => res.json())
                     .then(data => {
+                        if (data.error) return alert(data.error);
 
+                        input.value = data.quantity;
+                        document.getElementById('row-total-' + id).innerText = '$' + data.total;
+                        let summary = document.getElementById('summary-total-' + id);
+                        if (summary) summary.innerText = '$' + data.total;
+
+                        document.getElementById('grand-total').innerText = '$' + data.grand_total;
+                        document.getElementById('discount-amount').innerText = '$' + (data.discount || 0);
+                    })
+                    .catch(err => console.log(err));
+            }
+
+            // 🔹 Remove item
+            document.querySelectorAll('.remove-item').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    let id = this.dataset.id;
+
+                    fetch("/cart/remove", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                            },
+                            body: JSON.stringify({
+                                id: id
+                            })
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.error) return alert(data.error);
+
+                            let row = document.getElementById('cart-row-' + id);
+                            if (row) row.remove();
+
+                            let summary = document.getElementById('summary-total-' + id);
+                            if (summary) summary.parentElement.remove();
+
+                            document.getElementById('grand-total').innerText = '$' + data
+                                .grand_total;
+                            document.getElementById('discount-amount').innerText = '$' + (data
+                                .discount || 0);
+
+                            showMessage('Item removed from cart!');
+                        })
+                        .catch(err => console.log(err));
+                });
+            });
+
+            // 🔹 Apply coupon
+            document.getElementById('apply-coupon').addEventListener('click', function() {
+                let code = document.getElementById('coupon-code').value;
+
+                fetch("/apply-coupon", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                        },
+                        body: JSON.stringify({
+                            code: code
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
                         if (data.error) {
-                            alert(data.error);
+                            showCouponMessage(data.error, 'danger'); // 🔥 এখানে message দেখাবে
                             return;
                         }
 
-                        // 🔥 Row remove
-                        document.getElementById('cart-row-' + id).remove();
+                        showCouponMessage(data.success, 'success'); // 🔥 success message
 
-                        // 🔥 Summary remove
-                        let summary = document.getElementById('summary-total-' + id);
-                        if (summary) {
-                            summary.parentElement.remove();
-                        }
-
-                        // 🔥 Grand total update
-                        document.getElementById('grand-total').innerText = '$' + data.grand_total;
-
-                        showMessage('Item removed from cart!', 'success');
-
-                    })
-                    .catch(err => console.log(err));
+                        // UI update
+                        document.getElementById('discount-amount').innerText = '$' + data.discount;
+                        document.getElementById('grand-total').innerText = '$' + data.final_total;
+                    });
             });
 
-        });
+            // 🔹 Flash messages
+            function showCouponMessage(message, type = 'success') {
+                const container = document.getElementById('coupon-message');
+                container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
 
-        function showMessage(message) {
-
-            let container = document.getElementById('cart-message');
-
-            container.innerHTML = `
-                                    <div class="alert alert-danger" id="alert-msg">
-                                        ${message}
-                                    </div>
-                                `;
-
-            setTimeout(() => {
-                let msg = document.getElementById('alert-msg');
-                if (msg) {
-                    msg.style.transition = "opacity 0.5s";
-                    msg.style.opacity = "0";
-
-                    setTimeout(() => {
-                        msg.remove();
-                    }, 200);
-                }
-            }, 2000);
-        }
-    </script>
-    <script>
-        setTimeout(function() {
-            let msg = document.getElementById('success-message');
-            if (msg) {
-                msg.style.display = 'none';
+                // 2 সেকেন্ড পর fade out
+                setTimeout(() => {
+                    const msg = container.querySelector('.alert');
+                    if (msg) {
+                        msg.style.transition = "opacity 0.5s";
+                        msg.style.opacity = 0;
+                        setTimeout(() => {
+                            msg.remove();
+                        }, 500);
+                    }
+                }, 2000);
             }
-        }, 2000);
+
+            // 🔹 Auto-hide success messages
+            setTimeout(() => {
+                let msg = document.getElementById('success-message');
+                if (msg) msg.style.display = 'none';
+            }, 2000);
+
+        });
     </script>
 @endsection

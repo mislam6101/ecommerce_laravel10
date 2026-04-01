@@ -88,6 +88,23 @@
                         <li class="pc-item"><a class="pc-link" href="{{ route('admin.staff.a_index') }}">All Staffs</a></li>
                     </ul>
                 </li>
+
+                <li class="pc-item pc-hasmenu">
+                    <a href="#!" class="pc-link">
+                        <span class="pc-micon">
+                            <i class="ph-duotone ph-shopping-cart"></i>
+                        </span>
+                        <span class="pc-mtext">Discount Coupons</span>
+                        <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                    </a>
+                    <ul class="pc-submenu">
+                        <li class="pc-item"><a class="pc-link" href="{{ route('coupon.create') }}">Add Coupon</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ route('coupon.index') }}">Counpon List</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{url('')}}/admins/membership-pricing.html">Pricing</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{url('')}}/admins/membership-setting.html">Setting</a></li>
+                    </ul>
+                </li>
+
                 <li class="pc-item pc-caption">
                     <label>Widget</label>
                     <i class="ph-duotone ph-chart-pie"></i>
