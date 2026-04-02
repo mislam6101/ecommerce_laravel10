@@ -53,6 +53,11 @@ Route::post('/cart/update', [CartController::class, 'updateCart']);
 Route::post('/cart/remove', [CartController::class, 'removeCart'])->name('cart.remove');
 Route::post('/apply-coupon', [CartController::class, 'applyCoupon']);
 
+// Checkout page
+Route::get('/checkout', [\App\Http\Controllers\CheckoutController::class, 'index'])->name('checkout.index');
+// Checkout submit
+Route::post('/checkout', [\App\Http\Controllers\CheckoutController::class, 'placeOrder'])->name('checkout.place');
+
 Route::resource('about', AboutController::class);
 
 //THis is mine:

@@ -269,7 +269,7 @@
                                     </p>
 
                                 </div>
-                                <a href="#." class="btn margin-top-20">Proceed to checkout</a>
+                                <a href="{{ route('checkout.index') }}" class="btn margin-top-20">Proceed to checkout</a>
                             </div>
                         </div>
                     </div>
