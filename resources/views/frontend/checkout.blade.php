@@ -73,13 +73,14 @@
                             <!-- ESTIMATE SHIPPING & TAX -->
                             <div class="col-sm-7">
                                 <h6>Shipping Information</h6>
-                                <form>
+                                <form method="POST" action="{{ route('order.place') }}">
+                                    @csrf
                                     <ul>
 
                                         <!-- Name -->
                                         <li>
                                             <label> *Your NAME
-                                                <input type="text" name="first-name" value="" placeholder="">
+                                                <input type="text" name="name" value="" placeholder="" required>
                                             </label>
                                         </li>
                                         <!-- LAST NAME -->
@@ -97,7 +98,7 @@
                                         <li>
                                             <!-- ADDRESS -->
                                             <label>*ADDRESS
-                                                <input type="text" name="address" value="" placeholder="">
+                                                <input type="text" name="address" value="" placeholder="" required>
                                             </label>
                                         </li>
                                         <!-- TOWN/CITY -->
@@ -117,13 +118,13 @@
                                         <!-- EMAIL ADDRESS -->
                                         <li>
                                             <label> *EMAIL ADDRESS
-                                                <input type="text" name="contry-state" value="" placeholder="">
+                                                <input type="email" name="email" value="" placeholder="" required>
                                             </label>
                                         </li>
                                         <!-- PHONE -->
                                         <li>
                                             <label> *PHONE
-                                                <input type="text" name="postal-code" value="" placeholder="">
+                                                <input type="text" name="phone" value="" placeholder="" required>
                                             </label>
                                         </li>
 
@@ -217,20 +218,14 @@
 
                                             <li>
                                                 <div class="radio">
-                                                    <input type="radio" name="radio1" id="radio2" value="option2">
+                                                    <input type="radio" name="payment_method" id="radio2" value="cod">
                                                     <label for="radio2"> CASH ON DELIVERY</label>
                                                 </div>
                                             </li>
                                             <li>
                                                 <div class="radio">
-                                                    <input type="radio" name="radio1" id="radio3" value="option3">
-                                                    <label for="radio3"> CHEQUE PAYMENT </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="radio">
-                                                    <input type="radio" name="radio1" id="radio4" value="option4">
-                                                    <label for="radio4"> PAYPAL </label>
+                                                    <input type="radio" name="payment_method" id="radio3" value="online">
+                                                    <label for="radio3">MAKE PAYMENT</label>
                                                 </div>
                                             </li>
                                             <li>
@@ -242,7 +237,7 @@
                                                 </div>
                                             </li>
                                         </ul>
-                                        <a href="#." class="btn  btn-dark pull-right margin-top-30">PLACE ORDER</a>
+                                        <button class="btn  btn-dark pull-right margin-top-30">PLACE ORDER</button>
 
                                     </div>
                                     </form>

@@ -105,6 +105,16 @@
                     </ul>
                 </li>
 
+                <li class="pc-item pc-hasmenu">
+                    <a href="{{ route('order.index') }}" class="pc-link">
+                        <span class="pc-micon">
+                            <i class="ph-duotone ph-layer"></i>
+                        </span>
+                        <span class="pc-mtext">Orders</span>
+                        <span class="pc-arrow"></span>
+                    </a>
+                </li>
+
                 <li class="pc-item pc-caption">
                     <label>Widget</label>
                     <i class="ph-duotone ph-chart-pie"></i>

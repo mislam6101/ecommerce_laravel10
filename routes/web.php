@@ -7,6 +7,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ShopController;
@@ -58,6 +59,9 @@ Route::get('/checkout', [\App\Http\Controllers\CheckoutController::class, 'index
 // Checkout submit
 Route::post('/checkout', [\App\Http\Controllers\CheckoutController::class, 'placeOrder'])->name('checkout.place');
 
+//Place Order:
+Route::post('/place-order', [OrderController::class, 'placeOrder'])->name('order.place');
+
 Route::resource('about', AboutController::class);
 
 //THis is mine:
@@ -107,5 +111,6 @@ Route::middleware(['auth', 'role:admin|staff'])->group(function () {
     Route::resource('coupon', CouponController::class);
 
     Route::post('/product-status', [ProductController::class, 'statusUpdate']);
+    Route::get('/orders',[OrderController::class, 'index'])->name('order.index');
 });
 require __DIR__ . '/auth.php';
