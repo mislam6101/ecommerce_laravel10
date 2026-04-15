@@ -36,9 +36,9 @@
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
+                <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+                <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+                <![endif]-->
         <style>
             .thumb {
                 position: relative;
@@ -118,33 +118,49 @@
                                     <div
                                         class="thumb {{ $p->status == 0 ? 'out-product' : '' }} {{ $p->stock == 0 ? 'out-product' : '' }}">
 
-                                        @if (($p->status == 0) || ($p->stock == 0))
+                                        @if ($p->status == 0 || $p->stock == 0)
                                             <div class="out-text">Out Of Stock</div>
                                         @endif
 
-                                        <img style="height: 300px" class="img-1" src="{{ asset('storage/' . $p->image) }}" alt="">
-                                        <img style="height: 300px" class="img-2" src="{{ asset('storage/' . $p->image) }}" alt="">
+                                        <img style="height: 300px" class="img-1" src="{{ asset('storage/' . $p->image) }}"
+                                            alt="">
+                                        <img style="height: 300px" class="img-2" src="{{ asset('storage/' . $p->image) }}"
+                                            alt="">
                                         <!-- Overlay  -->
-                                        <div class="overlay">
-                                            <div class="position-center-center"> <a
-                                                    href="{{ route('product.details', $p->id) }}"><i class="icon-eye"></i></a> </div>
-                                            <div class="add-crt"><a href="{{ route('cart.add', $p->id) }}"><i
-                                                        class="icon-basket margin-right-10"></i>
-                                                    Add To Cart</a></div>
-                                        </div>
+                                        @if ($p->status == 0 || $p->stock == 0)
+                                        @else
+                                            <div class="overlay">
+                                                <div class="position-center-center"> <a
+                                                        href="{{ route('product.details', $p->id) }}"><i
+                                                            class="icon-eye"></i></a> </div>
+                                                <div class="add-crt"><a href="{{ route('cart.add', $p->id) }}"><i
+                                                            class="icon-basket margin-right-10"></i>
+                                                        Add To Cart</a></div>
+                                            </div>
+                                        @endif
                                     </div>
 
                                     <!-- Item Name -->
-                                    <div class="item-name fr-grd"> <a href="{{ route('product.details', $p->id) }}"
+                                    <div class="item-name fr-grd"> 
+                                        @if ($p->status == 0 || $p->stock == 0)
+                                        <a class="i-tittle">{{ $p->name }}</a>
+                                        @else
+                                            <a href="{{ route('product.details', $p->id) }}"
                                             class="i-tittle">{{ $p->name }}</a>
+                                        @endif
                                         <span class="price">
                                             @if ($p->discount_price > 0)
                                                 <small>$</small><span class="line-through">{{ $p->price }}</span>
                                                 <small>$</small>{{ $dis }}
-                                        </span> <a class="deta animated fadeInRight" href="{{ route('product.details', $p->id) }}">View Detail</a>
-                                    @else
-                                        <small>$</small>{{ $p->price }}</span> <a class="deta animated fadeInRight"
+                                        </span> <a class="deta animated fadeInRight"
                                             href="{{ route('product.details', $p->id) }}">View Detail</a>
+                                    @else
+                                        <small>$</small>{{ $p->price }}</span>
+                                        @if ($p->status == 0 || $p->stock == 0)
+                                        @else
+                                            <a class="deta animated fadeInRight"
+                                                href="{{ route('product.details', $p->id) }}">View Detail</a>
+                                        @endif
                         @endif
 
                     </div>
