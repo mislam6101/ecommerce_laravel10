@@ -35,9 +35,9 @@
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>
-                                                                                        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-                                                                                        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-                                                                                    <![endif]-->
+                                                                                                <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+                                                                                                <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+                                                                                            <![endif]-->
 
     </head>
 @endsection
@@ -77,56 +77,112 @@
                                     @csrf
                                     <ul>
 
-                                        <!-- Name -->
-                                        <li>
-                                            <label> *Your NAME
-                                                <input type="text" name="name" value="" placeholder="" required>
-                                            </label>
-                                        </li>
-                                        <!-- LAST NAME -->
-                                        {{-- <li class="col-md-6">
+                                        @auth
+                                            @php
+                                                $user = auth()->user();
+                                            @endphp
+                                            <!-- Name -->
+                                            <li>
+                                                <label> *Your NAME
+                                                    <input type="text" name="name" value="{{ auth()->check() ? auth()->user()->name : old('name') }}" placeholder="" required>
+                                                </label>
+                                            </li>
+                                            <!-- LAST NAME -->
+                                            {{-- <li class="col-md-6">
                                             <label> *LAST NAME
                                                 <input type="text" name="last-name" value="" placeholder="">
                                             </label>
                                         </li> --}}
-                                        {{-- <li class="col-md-6">
+                                            {{-- <li class="col-md-6">
                                             <!-- COMPANY NAME -->
                                             <label>COMPANY NAME
                                                 <input type="text" name="company" value="" placeholder="">
                                             </label>
                                         </li> --}}
-                                        <li>
-                                            <!-- ADDRESS -->
-                                            <label>*ADDRESS
-                                                <input type="text" name="address" value="" placeholder="" required>
-                                            </label>
-                                        </li>
-                                        <!-- TOWN/CITY -->
-                                        {{-- <li class="col-md-6">
+                                            <li>
+                                                <!-- ADDRESS -->
+                                                <label>*ADDRESS
+                                                    <input type="text" name="address" value="" placeholder="" required>
+                                                </label>
+                                            </li>
+                                            <!-- TOWN/CITY -->
+                                            {{-- <li class="col-md-6">
                                             <label>*TOWN/CITY
                                                 <input type="text" name="town" value="" placeholder="">
                                             </label>
                                         </li> --}}
 
-                                        <!-- COUNTRY -->
-                                        {{-- <li class="col-md-6">
+                                            <!-- COUNTRY -->
+                                            {{-- <li class="col-md-6">
                                             <label> COUNTRY
                                                 <input type="text" name="contry-state" value="" placeholder="">
                                             </label>
                                         </li> --}}
 
-                                        <!-- EMAIL ADDRESS -->
-                                        <li>
-                                            <label> *EMAIL ADDRESS
-                                                <input type="email" name="email" value="" placeholder="" required>
+                                            <!-- EMAIL ADDRESS -->
+                                            <li>
+                                                <label> *EMAIL ADDRESS
+                                                    <input type="email" name="email" value="{{ auth()->check() ? auth()->user()->email : old('email') }}" placeholder="" required>
+                                                </label>
+                                            </li>
+                                            <!-- PHONE -->
+                                            <li>
+                                                <label> *PHONE
+                                                    <input type="text" name="phone" value="" placeholder="" required>
+                                                </label>
+                                            </li>
+                                        @else
+                                            <!-- Name -->
+                                            <li>
+                                                <label> *Your NAME
+                                                    <input type="text" name="name" value="" placeholder="" required>
+                                                </label>
+                                            </li>
+                                            <!-- LAST NAME -->
+                                            {{-- <li class="col-md-6">
+                                            <label> *LAST NAME
+                                                <input type="text" name="last-name" value="" placeholder="">
                                             </label>
-                                        </li>
-                                        <!-- PHONE -->
-                                        <li>
-                                            <label> *PHONE
-                                                <input type="text" name="phone" value="" placeholder="" required>
+                                        </li> --}}
+                                            {{-- <li class="col-md-6">
+                                            <!-- COMPANY NAME -->
+                                            <label>COMPANY NAME
+                                                <input type="text" name="company" value="" placeholder="">
                                             </label>
-                                        </li>
+                                        </li> --}}
+                                            <li>
+                                                <!-- ADDRESS -->
+                                                <label>*ADDRESS
+                                                    <input type="text" name="address" value="" placeholder="" required>
+                                                </label>
+                                            </li>
+                                            <!-- TOWN/CITY -->
+                                            {{-- <li class="col-md-6">
+                                            <label>*TOWN/CITY
+                                                <input type="text" name="town" value="" placeholder="">
+                                            </label>
+                                        </li> --}}
+
+                                            <!-- COUNTRY -->
+                                            {{-- <li class="col-md-6">
+                                            <label> COUNTRY
+                                                <input type="text" name="contry-state" value="" placeholder="">
+                                            </label>
+                                        </li> --}}
+
+                                            <!-- EMAIL ADDRESS -->
+                                            <li>
+                                                <label> *EMAIL ADDRESS
+                                                    <input type="email" name="email" value="" placeholder="" required>
+                                                </label>
+                                            </li>
+                                            <!-- PHONE -->
+                                            <li>
+                                                <label> *PHONE
+                                                    <input type="text" name="phone" value="" placeholder="" required>
+                                                </label>
+                                            </li>
+                                        @endauth
 
                                         {{-- <!-- PHONE -->
                                         <li class="col-md-6">
@@ -218,13 +274,15 @@
 
                                             <li>
                                                 <div class="radio">
-                                                    <input type="radio" name="payment_method" id="radio2" value="cod">
+                                                    <input type="radio" name="payment_method" id="radio2"
+                                                        value="cod">
                                                     <label for="radio2"> CASH ON DELIVERY</label>
                                                 </div>
                                             </li>
                                             <li>
                                                 <div class="radio">
-                                                    <input type="radio" name="payment_method" id="radio3" value="online">
+                                                    <input type="radio" name="payment_method" id="radio3"
+                                                        value="online">
                                                     <label for="radio3">MAKE PAYMENT</label>
                                                 </div>
                                             </li>

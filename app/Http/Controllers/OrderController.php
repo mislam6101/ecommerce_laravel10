@@ -10,7 +10,8 @@ use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $order = Order::with('items')->get();
         return view('backend.orders.index', compact('order'));
     }
@@ -126,5 +127,18 @@ class OrderController extends Controller
         session()->forget('coupon');
 
         return redirect()->route('home.index')->with('success', 'Order placed successfully!');
+    }
+
+    public function updateStatus(Request $request)
+    {
+        $order = Order::findOrFail($request->id);
+
+        $order->status = $request->status;
+        $order->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Order status updated successfully'
+        ]);
     }
 }

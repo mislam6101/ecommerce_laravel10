@@ -112,5 +112,6 @@ Route::middleware(['auth', 'role:admin|staff'])->group(function () {
 
     Route::post('/product-status', [ProductController::class, 'statusUpdate']);
     Route::get('/orders',[OrderController::class, 'index'])->name('order.index');
+    Route::post('/admin/order/status', [OrderController::class, 'updateStatus'])->name('order.status');
 });
 require __DIR__ . '/auth.php';

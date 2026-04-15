@@ -117,7 +117,45 @@
                                             <td class="text-center">{{ $d->total }}</td>
                                             <td class="text-center">{{ $d->payment_method }}</td>
                                             <td class="text-center">{{ $d->payment_status }}</td>
-                                            <td class="text-center">{{ $d->status }}</td>
+                                            <td class="text-center">
+
+                                                @php
+                                                    $statusColor = match ($d->status) {
+                                                        'placed' => 'warning',
+                                                        'confirmed' => 'info',
+                                                        'delivered' => 'primary',
+                                                        'completed' => 'success',
+                                                        'cancelled' => 'danger',
+                                                        default => 'secondary',
+                                                    };
+                                                @endphp
+
+                                                {{-- 🔥 Badge --}}
+                                                <span class="badge bg-{{ $statusColor }} status-badge"
+                                                    data-id="{{ $d->id }}" style="cursor:pointer;">
+                                                    {{ ucfirst($d->status) }}
+                                                </span>
+
+                                                {{-- 🔽 Hidden Dropdown --}}
+                                                <select class="order-status form-select form-select-sm mt-1 d-none"
+                                                    data-id="{{ $d->id }}">
+                                                    <option value="placed" {{ $d->status == 'placed' ? 'selected' : '' }}>
+                                                        Placed</option>
+                                                    <option value="confirmed"
+                                                        {{ $d->status == 'confirmed' ? 'selected' : '' }}>Confirmed
+                                                    </option>
+                                                    <option value="delivered"
+                                                        {{ $d->status == 'delivered' ? 'selected' : '' }}>Delivered
+                                                    </option>
+                                                    <option value="completed"
+                                                        {{ $d->status == 'completed' ? 'selected' : '' }}>Completed
+                                                    </option>
+                                                    <option value="cancelled"
+                                                        {{ $d->status == 'cancelled' ? 'selected' : '' }}>Cancelled
+                                                    </option>
+                                                </select>
+
+                                            </td>
 
                                         </tr>
                                     </tbody>
@@ -136,8 +174,8 @@
         <div class="footer-wrapper container-fluid">
             <div class="row">
                 <div class="col my-1">
-                    <p class="m-0">Flat Able &#9829; crafted by Team <a href="https://themeforest.net/user/phoenixcoded"
-                            target="_blank">Phoenixcoded</a></p>
+                    <p class="m-0">Flat Able &#9829; crafted by Team <a
+                            href="https://themeforest.net/user/phoenixcoded" target="_blank">Phoenixcoded</a></p>
                 </div>
                 <div class="col-auto my-1">
                     <ul class="list-inline footer-link mb-0">
@@ -189,5 +227,101 @@
 
     <script>
         preset_change('preset-1');
+    </script>
+    <script>
+        document.querySelectorAll('.order-status').forEach(select => {
+
+            select.addEventListener('change', function() {
+
+                let orderId = this.dataset.id;
+                let status = this.value;
+
+                fetch("{{ route('order.status') }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                        },
+                        body: JSON.stringify({
+                            id: orderId,
+                            status: status
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(err => console.log(err));
+
+            });
+
+        });
+    </script>
+    <script>
+        document.querySelectorAll('.status-badge').forEach(badge => {
+
+            badge.addEventListener('click', function() {
+
+                let id = this.dataset.id;
+
+                let select = document.querySelector(`select.order-status[data-id="${id}"]`);
+
+                this.classList.add('d-none');
+                select.classList.remove('d-none');
+            });
+
+        });
+
+
+        document.querySelectorAll('.order-status').forEach(select => {
+
+            select.addEventListener('change', function() {
+
+                let id = this.dataset.id;
+                let status = this.value;
+
+                fetch("{{ route('order.status') }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                        },
+                        body: JSON.stringify({
+                            id: id,
+                            status: status
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+
+                        if (data.success) {
+
+                            // 🔥 update badge text + color
+                            let badge = document.querySelector(`.status-badge[data-id="${id}"]`);
+
+                            let colorMap = {
+                                placed: 'warning',
+                                confirmed: 'info',
+                                delivered: 'primary',
+                                completed: 'success',
+                                cancelled: 'danger'
+                            };
+
+                            badge.innerText = status.charAt(0).toUpperCase() + status.slice(1);
+                            badge.className = `badge bg-${colorMap[status]} status-badge`;
+                            badge.classList.remove('d-none');
+
+                            // hide select again
+                            this.classList.add('d-none');
+
+                        }
+
+                    });
+
+            });
+
+        });
     </script>
 @endsection
